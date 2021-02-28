@@ -15,4 +15,3 @@
 # vendor/
 .idea/
 bin/
-./go-web-crawler-starter.log

@@ -3,23 +3,19 @@ package configuration
 import "flag"
 
 type Configuration struct {
-	LogConfiguration *logConfiguration
-}
-
-type Configurable interface {
-	SetFlags()
+	ControllerConfiguration *ControllerConfiguration `yaml:"controllerConfiguration" json:"controllerConfiguration"`
 }
 
 func NewConfiguration() (*Configuration, error) {
 	configuration := &Configuration{
-		LogConfiguration: nil,
+		ControllerConfiguration: nil,
 	}
 
-	logConfiguration := NewLogConfiguration()
+	controllerConfiguration := NewControllerConfiguration()
 
 	flag.Parse()
 
-	configuration.LogConfiguration = logConfiguration
+	configuration.ControllerConfiguration = controllerConfiguration
 
 	return configuration, nil
 }
