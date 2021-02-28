@@ -15,6 +15,10 @@ func NewConfiguration() (*Configuration, error) {
 
 	flag.Parse()
 
+	if err := controllerConfiguration.Validate(); err != nil {
+		return nil, err
+	}
+
 	configuration.ControllerConfiguration = controllerConfiguration
 
 	return configuration, nil
