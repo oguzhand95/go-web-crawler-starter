@@ -8,7 +8,7 @@ web pages;
 - https://pubg.op.gg/
 - https://pubglookup.com/
 
-Given a PUBG username, controllers retrieve list of 'damages' (gameplay element) that user did on last couple of matches.
+Given a PUBG username, controllers retrieves some data from the pages.
 
 ## Controllers
 
