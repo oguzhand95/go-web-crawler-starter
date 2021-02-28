@@ -45,7 +45,8 @@ func registerControllers(controllerMap map[string]controllerInterface.Controller
 func runControllers(controllerMap map[string]controllerInterface.Controller, controllersToRun []string) error {
 	for _, controllerName := range controllersToRun {
 		if val, ok := controllerMap[controllerName]; ok {
-			glog.Infof("%v", val)
+			glog.Infof("running controller %q", val.GetName())
+			go val.Run()
 		} else {
 			glog.Warningf("controller %q could not found", controllerName)
 		}
