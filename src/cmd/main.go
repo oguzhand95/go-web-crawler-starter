@@ -5,7 +5,8 @@ import (
 	"github.com/gocolly/colly/v2"
 	"github.com/golang/glog"
 	controllerInterface "github.com/oguzhand95/go-web-crawler-starter/src/controller"
-	"github.com/oguzhand95/go-web-crawler-starter/src/controller/pubg.op.gg"
+	pubgopgg "github.com/oguzhand95/go-web-crawler-starter/src/controller/pubg.op.gg"
+	pubglookupcom "github.com/oguzhand95/go-web-crawler-starter/src/controller/pubglookup.com"
 	"github.com/oguzhand95/go-web-crawler-starter/src/internal/configuration"
 	"strings"
 	"sync"
@@ -48,9 +49,11 @@ func main() {
 }
 
 func registerControllers(controllerMap map[string]controllerInterface.Controller, crawler *colly.Collector) {
-	var pubgOpGgController controllerInterface.Controller = controller.NewPubgOpGgController(crawler)
+	var pubgOpGgController controllerInterface.Controller = pubgopgg.NewPubgOpGgController(crawler)
+	var pubgLookupController controllerInterface.Controller = pubglookupcom.NewPubgLookupController(crawler)
 
 	controllerMap[pubgOpGgController.GetName()] = pubgOpGgController
+	controllerMap[pubgLookupController.GetName()] = pubgLookupController
 }
 
 func runControllers(ctx context.Context, waitGroup *sync.WaitGroup,
