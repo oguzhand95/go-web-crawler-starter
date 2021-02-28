@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/gocolly/colly/v2"
 	"github.com/golang/glog"
 	controllerInterface "github.com/oguzhand95/go-web-crawler-starter/src/controller"
 	"github.com/oguzhand95/go-web-crawler-starter/src/controller/pubg.op.gg"
@@ -24,7 +25,9 @@ func main() {
 		glog.Infof("controllers: %s", *appConfiguration.ControllerConfiguration.Controllers)
 	}
 
-	registerControllers(controllerMap)
+	crawler := createCrawler()
+
+	registerControllers(controllerMap, crawler)
 
 	if appConfiguration == nil {
 		glog.Fatal("Application configuration is null")
@@ -32,10 +35,10 @@ func main() {
 
 	listOfControllers := getControllerListFromConfiguration(appConfiguration.ControllerConfiguration)
 
-	ctx, _ := context.WithTimeout(context.Background(), 10 * time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	waitGroup := &sync.WaitGroup{}
 
-	err = runControllers(ctx, waitGroup, controllerMap, listOfControllers)
+	err = runControllers(ctx, waitGroup, appConfiguration.ControllerConfiguration, controllerMap, listOfControllers)
 
 	if err != nil {
 		glog.Fatalf("failed during execution of controllers:%s\n", err.Error())
@@ -44,13 +47,14 @@ func main() {
 	waitGroup.Wait()
 }
 
-func registerControllers(controllerMap map[string]controllerInterface.Controller) {
-	var pubgOpGgController controllerInterface.Controller = controller.NewPubgOpGgController()
+func registerControllers(controllerMap map[string]controllerInterface.Controller, crawler *colly.Collector) {
+	var pubgOpGgController controllerInterface.Controller = controller.NewPubgOpGgController(crawler)
 
 	controllerMap[pubgOpGgController.GetName()] = pubgOpGgController
 }
 
 func runControllers(ctx context.Context, waitGroup *sync.WaitGroup,
+	controllerConfiguration *configuration.ControllerConfiguration,
 	controllerMap map[string]controllerInterface.Controller, controllersToRun []string) error {
 	for _, controllerName := range controllersToRun {
 		if val, ok := controllerMap[controllerName]; ok {
@@ -58,7 +62,7 @@ func runControllers(ctx context.Context, waitGroup *sync.WaitGroup,
 			waitGroup.Add(1)
 
 			go func(ctx context.Context, waitGroup *sync.WaitGroup) {
-				val.Run()
+				val.Run(controllerConfiguration)
 				waitGroup.Done()
 				<-ctx.Done()
 			}(ctx, waitGroup)
@@ -72,4 +76,8 @@ func runControllers(ctx context.Context, waitGroup *sync.WaitGroup,
 
 func getControllerListFromConfiguration(controllerConfiguration *configuration.ControllerConfiguration) []string {
 	return strings.Split(*controllerConfiguration.Controllers, ",")
+}
+
+func createCrawler() *colly.Collector {
+	return colly.NewCollector()
 }
