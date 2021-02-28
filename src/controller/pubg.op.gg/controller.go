@@ -22,5 +22,5 @@ func (p *PubgOpGgController) GetName() string {
 }
 
 func (p *PubgOpGgController) Run() {
-	glog.Info("Controller running: %s", controllerName)
+	glog.Infof("Controller running: %s", controllerName)
 }
