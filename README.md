@@ -61,5 +61,5 @@ Required to run;
 
 `-controllers="pubg.op.gg,pubglookup.com" -pubg-username="<PUBG-USERNAME>"`
 
-Add `-logtostderr=true` to see logs on standard output.
+Add `-alsologtostderr=true` to see logs on standard output.
 
